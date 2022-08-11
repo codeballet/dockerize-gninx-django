@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  nginx:
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    volumes:
+      - ./nginx/config:/etc/nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - django
+
+  django:
+    build:
+      dockerfile: Dockerfile
+      context: ./django
+    # command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn testing.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./django:/code
