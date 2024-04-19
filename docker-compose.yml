@@ -1,8 +1,15 @@
-version: "3.9"
-
 services:
+
+  django:
+    build: ./django
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./django/:/usr/src/app/
+    env_file:
+      - ./.env.dev
+
   nginx:
-    image: nginx:latest
+    image: nginx:1.25
     volumes:
       - ./nginx/config/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/demopage:/sites/demo
@@ -11,13 +18,3 @@ services:
     depends_on:
       - django
 
-  django:
-    build:
-      dockerfile: Dockerfile
-      context: ./django
-    ports:
-      - "8000:8000"
-    # command: python manage.py runserver 0.0.0.0:8000
-    command: gunicorn testing.wsgi:application --bind 0.0.0.0:8000
-    volumes:
-      - ./django:/code
