@@ -18,6 +18,10 @@ Collect static files:
 ```
 docker compose -f docker-compose.prod.yml exec django python manage.py collectstatic
 ```
+To generate a secret key:
+```
+python3 -c "import secrets; print(secrets.token_urlsafe())"
+```
 
 ## Useful info for setup
 - [Tutorial: Get started with Amazon EC2 Linux instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html) by AWS.
