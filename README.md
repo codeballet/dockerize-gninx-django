@@ -1,27 +1,45 @@
 ## Prerequisites
 - A registered domain name.
-- A DNS record with <your_domain.com> pointing to your proxy server’s public IP address.
-
-
+- A DNS record with `your_domain.com` pointing to your proxy server’s public IP address.
 
 
 ## Convenient commands
 Run the production version:
 ```
-docker compose -f docker-compose.prod.yml up --build -d
+sudo docker compose -f docker-compose.prod.yml up --build -d
 ```
 Migrate database:
 ```
-docker compose -f docker-compose.prod.yml exec django python manage.py migrate --noinput
+sudo docker compose -f docker-compose.prod.yml exec django python manage.py migrate --noinput
 ```
 Collect static files:
 ```
-docker compose -f docker-compose.prod.yml exec django python manage.py collectstatic
+sudo docker compose -f docker-compose.prod.yml exec django python manage.py collectstatic
 ```
+
+## Production security
 To generate a secret key:
 ```
 python3 -c "import secrets; print(secrets.token_urlsafe())"
 ```
+
+## Get certificates from Let's Encrypt with certbot
+Before acquiring the certificates:
+- Comment out everything having to do with https in the Nginx config file.
+- Comment out the Redirect to HTTPS location in the http section.
+
+Do a dry run to test:
+```
+sudo docker compose -f docker-compose.prod.yml run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d spaceengineering.io
+```
+And if it works, without the `--dry-run`:
+sudo docker compose -f docker-compose.prod.yml run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ -d spaceengineering.io
+```
+
+After the successful acquiring of certificates:
+- Uncomment everything having to do with https in the Nginx config file.
+- Comment out the location which proxies to Django in the http section.
+- Comment out the location with static files in the http section.
 
 ## Useful info for setup
 - [Tutorial: Get started with Amazon EC2 Linux instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html) by AWS.
