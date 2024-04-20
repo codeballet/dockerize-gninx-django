@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
+
 # Create your views here.
 def index(request):
-    return HttpResponse("Hello from Django on NGINX")
+    return HttpResponse("Hello from a working Django on NGINX")
